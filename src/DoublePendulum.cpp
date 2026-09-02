@@ -1,7 +1,6 @@
 #include "../include/DoublePendulum.h"
 #include <cmath>
 
-
 Derivative DoublePendulum::derivatives(const State &s) const {
 
     double delta = s.theta1 - s.theta2;
@@ -31,5 +30,17 @@ Derivative DoublePendulum::derivatives(const State &s) const {
 }
 
 double DoublePendulum::energy(const State &s) const {
-    // nrg eqn
+
+    double delta = s.theta1 - s.theta2;
+
+    double Em1 = 0.5 * parameters.m1 * parameters.l1 * parameters.l1 * s.omega1 * s.omega1;
+    Em1 -= parameters.m1 * parameters.g * parameters.l1 * std::cos(s.theta1);
+
+    double Em2 = 0.5 * parameters.m2 * parameters.l1 * parameters.l1 * s.omega1 * s.omega1;
+    Em2 += 0.5 * parameters.m2 * parameters.l2 * parameters.l2 * s.omega2 * s.omega2;
+    Em2 += parameters.m2 * parameters.l1 * parameters.l2 * s.omega1 * s.omega2 * std::cos(delta);
+    Em2 -= parameters.g * parameters.m2 * (parameters.l1 * std::cos(s.theta1) + parameters.l2 * std::cos(s.theta2));
+
+    return Em1 + Em2;
+
 }
