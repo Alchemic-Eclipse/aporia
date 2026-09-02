@@ -1,18 +1,36 @@
-#include "iostream"
+#include <iostream>
 #include "../include/DoublePendulum.h"
+#include "../include/EulerIntegrator.h"
 
 int main() {
     DoublePendulum pendulum;
 
     pendulum.parameters={2.0, 1.5, 1.0, 1.0, 9.8};
-    // pendulum.state = {1.0, 0.5, 0,0};
-
     pendulum.state = {1.0, 0.5, 2.0, 1.0};
 
-    Derivative d = pendulum.derivatives(pendulum.state);
+    double dt = 0.001;
 
-    std::cout << "dtheta1/dt: " << d.theta1 << '\n';
-    std::cout << "dtheta2/dt: " << d.theta2 << '\n';
-    std::cout << "domega1/dt: " << d.omega1 << '\n';
-    std::cout << "domega2/dt: " << d.omega2 << '\n';
+
+
+    for (int i = 0; i < 10000; i++) {
+        Derivative d = pendulum.derivatives(pendulum.state);
+        State newState = step(pendulum.state, d, dt);
+
+        pendulum.state = newState;
+
+        if (i % 100 == 0) {
+            std::cout << "t = " << i * dt
+                      << " | theta1 = " << pendulum.state.theta1
+                      << " | theta2 = " << pendulum.state.theta2
+                      << '\n';
+        }
+    }
+
+
+
+
+
+
+
+
 }

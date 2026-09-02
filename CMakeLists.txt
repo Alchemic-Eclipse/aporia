@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(aporia src/main.cpp
         src/DoublePendulum.cpp
-        include/DoublePendulum.h)
+        include/DoublePendulum.h
+        include/EulerIntegrator.h
+        src/EulerIntegrator.cpp)

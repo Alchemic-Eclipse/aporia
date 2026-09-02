@@ -1,5 +1,5 @@
 #include "../include/DoublePendulum.h"
-#include "cmath"
+#include <cmath>
 
 
 Derivative DoublePendulum::derivatives(const State &s) const {
