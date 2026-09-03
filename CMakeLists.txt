@@ -3,8 +3,14 @@ project(aporia)
 
 set(CMAKE_CXX_STANDARD 23)
 
+find_package(raylib REQUIRED)
+
 add_executable(aporia src/main.cpp
         src/DoublePendulum.cpp
         include/DoublePendulum.h
         include/EulerIntegrator.h
-        src/EulerIntegrator.cpp)
+        src/EulerIntegrator.cpp
+        src/renderer.cpp
+        include/renderer.h)
+
+target_link_libraries(aporia PRIVATE raylib)

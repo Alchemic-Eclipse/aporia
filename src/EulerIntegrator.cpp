@@ -10,3 +10,4 @@ State step(const State &state, const Derivative &derivative, double dt) {
     newState.omega2 = state.omega2 + derivative.omega2 * dt;
     return newState;
 }
+
