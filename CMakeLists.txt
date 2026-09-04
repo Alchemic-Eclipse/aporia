@@ -11,6 +11,7 @@ add_executable(aporia src/main.cpp
         include/EulerIntegrator.h
         src/EulerIntegrator.cpp
         src/renderer.cpp
-        include/renderer.h)
+        include/renderer.h
+        include/Integrator.h)
 
 target_link_libraries(aporia PRIVATE raylib)

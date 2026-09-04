@@ -17,6 +17,7 @@ int main() {
 
     double dt = 0.01;
 
+    EulerIntegrator integrator;
     initializeRenderer();
 
 
@@ -24,10 +25,8 @@ int main() {
 
     while (!WindowShouldClose()) {
         // Physics
-        Derivative d = pendulum.derivatives(pendulum.state);
-        State newState = step(pendulum.state, d, dt);
+        pendulum.state = integrator.step(pendulum, pendulum.state, dt);
 
-        pendulum.state = newState;
         double currentEnergy = pendulum.energy(pendulum.state); // E(t)
 
         // Rendering
@@ -41,6 +40,6 @@ int main() {
 
     }
 
-        CloseWindow();
+        closeRenderer();
     }
 
