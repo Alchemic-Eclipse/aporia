@@ -3,41 +3,55 @@
 #include "../include/EulerIntegrator.h"
 #include "../include/renderer.h"
 #include "../include/RK4Integrator.h"
+#include "../include/simulation.h"
+#include "../include/analysis.h"
 #include <raylib.h>
-
 
 int main() {
     DoublePendulum pendulum;
 
     pendulum.parameters={2.0, 1.5, 50.0, 50.0, 9.8};
-    pendulum.state = {1.0, 0.5, 2.0, 1.0};
+    pendulum.state = {3.14, 0.5, 2.0, 4.0};
+
+    State initialState = pendulum.state;
 
 
-    double dt = 0.01;
+    double dt = 0.015;
+    int steps = 1000;
 
     // EulerIntegrator integrator;
     RK4Integrator integrator;
 
+    // Visual Rendering
     initializeRenderer();
 
-    double initialEnergy = pendulum.energy(pendulum.state); // E(0)
+    bool paused = false;
 
-    while (!WindowShouldClose()) {
+    while(!WindowShouldClose()) {
 
-        // Physics
-        pendulum.state = integrator.step(pendulum, pendulum.state, dt);
+        if (IsKeyPressed(KEY_SPACE)) {
+            paused = !paused;
+        }
 
-        double currentEnergy = pendulum.energy(pendulum.state); // E(t)
+        if (!paused) {
+            pendulum.state = integrator.step(pendulum, pendulum.state, dt);
+        }
 
-        // Rendering
+        if (IsKeyPressed(KEY_N) && paused) {
+            pendulum.state = integrator.step(pendulum, pendulum.state, dt);
+        }
+
+        if (IsKeyPressed(KEY_R)) {
+            pendulum.state = initialState;
+        }
         renderFrame(pendulum);
-        std::cout
-                 << " | Energy difference = " <<  (currentEnergy - initialEnergy)
-                 << " | Energy Error (in %) = " << std::abs((currentEnergy - initialEnergy) / initialEnergy) * 100
-                 << '\n';
-
     }
 
-        closeRenderer();
-    }
+    // Numerical experiment
+    std::vector<double> energyHistory = simulate(pendulum, integrator, dt, steps);
 
+    double maxError = maxEnergyError(energyHistory);
+    std::cout << "Max energy error = " << maxError << " %\n";
+
+    closeRenderer();
+}

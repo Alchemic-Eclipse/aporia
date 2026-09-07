@@ -4,4 +4,3 @@
 void initializeRenderer();
 void renderFrame(const DoublePendulum& pendulum);
 void closeRenderer();
-
