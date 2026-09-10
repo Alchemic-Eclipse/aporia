@@ -8,19 +8,24 @@
 #include <raylib.h>
 
 int main() {
-    DoublePendulum pendulum;
+    DoublePendulum pendulumA;
+    DoublePendulum pendulumB;
 
-    pendulum.parameters={2.0, 1.5, 50.0, 50.0, 9.8};
-    pendulum.state = {3.14, 0.5, 2.0, 4.0};
+    pendulumA.parameters={2.0, 1.5, 80.0, 80.0, 9.8};
+    pendulumB.parameters = pendulumA.parameters;
 
-    State initialState = pendulum.state;
+    pendulumA.state = {3.14, 0.5, 2.0, 4.0};
+    pendulumB.state = {3.14, 0.500001, 2.0, 4.0};
 
+    State initialStateA = pendulumA.state;
+    State initialStateB = pendulumB.state;
 
     double dt = 0.015;
-    int steps = 1000;
+    double time = 0.0;
 
     // EulerIntegrator integrator;
     RK4Integrator integrator;
+
 
     // Visual Rendering
     initializeRenderer();
@@ -34,24 +39,26 @@ int main() {
         }
 
         if (!paused) {
-            pendulum.state = integrator.step(pendulum, pendulum.state, dt);
+            pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
+            pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+            time += dt;
         }
 
         if (IsKeyPressed(KEY_N) && paused) {
-            pendulum.state = integrator.step(pendulum, pendulum.state, dt);
+            pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
+            pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+            time += dt;
         }
 
         if (IsKeyPressed(KEY_R)) {
-            pendulum.state = initialState;
+            pendulumA.state = initialStateA;
+            pendulumB.state = initialStateB;
+            time = 0.0;
         }
-        renderFrame(pendulum);
-    }
 
-    // Numerical experiment
-    std::vector<double> energyHistory = simulate(pendulum, integrator, dt, steps);
-
-    double maxError = maxEnergyError(energyHistory);
-    std::cout << "Max energy error = " << maxError << " %\n";
+        renderFrame(pendulumA, pendulumB, time, divergence(pendulumA.state, pendulumB.state));
+        // std::cout << divergence(pendulumA.state, pendulumB.state) << std::endl;
+    }   
 
     closeRenderer();
 }
