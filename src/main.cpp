@@ -101,6 +101,14 @@ int main() {
         }
 
         else if (currentScreen == Screen::EXPERIMENT) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Vector2 mouse = GetMousePosition();
+
+                if (CheckCollisionPointRec(mouse, {740, 500, 300, 65})) {
+                    currentScreen = Screen::SIMULATION;
+                }
+            }
+
             renderExperimentScreen();
         }
 

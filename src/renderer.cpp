@@ -1,7 +1,6 @@
 #include "../include/renderer.h"
 #include "raylib.h"
 #include <cmath>
-#include <forward_list>
 
 Camera2D camera;
 
@@ -33,6 +32,64 @@ void renderHomeScreen() {
 
 void renderExperimentScreen() {
 
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawText("APORIA", 60, 40, 40, WHITE);
+    DrawText("EXPERIMENT SETUP", 60,100,30, WHITE);
+
+    // Mass
+    DrawText("MASS", 60, 170, 25, WHITE);
+    DrawText("m1", 80, 215, 20, WHITE);
+    DrawText("2.0", 200, 215, 20, WHITE);
+
+    DrawText("m2", 80, 255, 20, WHITE);
+    DrawText("1.5", 200, 255, 20, WHITE);
+
+    // Length
+    DrawText("LENGTH", 400, 170, 25, WHITE);
+    DrawText("l1", 420, 215, 20, WHITE);
+    DrawText("80.0", 520,215,20, WHITE);
+
+    DrawText("l2", 420, 255, 20, WHITE);
+    DrawText("80.0", 520, 255, 20, WHITE);
+
+    // Gravity
+    DrawText("Gravity", 740, 170, 25, WHITE);
+    DrawText("g", 760, 215, 20, WHITE);
+    DrawText("9.8", 880, 215, 20, WHITE);
+
+    // Initial Conditions
+    DrawText("Initial Conditions", 60, 330,25, WHITE);
+
+    DrawText("theta1", 80, 375, 20, WHITE);
+    DrawText("3.14", 200, 375, 20, WHITE);
+
+    DrawText("theta2 A", 80, 415, 20, WHITE);
+    DrawText("0.5", 200, 415, 20, WHITE);
+
+    DrawText("theta2 B", 80, 455, 20, WHITE);
+    DrawText("0.5000000001", 200, 455, 20, WHITE);
+
+    DrawText("omega1", 420, 375, 20, WHITE);
+    DrawText("2.0", 540, 375, 20, WHITE);
+
+    DrawText("omega2", 420,415, 20, WHITE);
+    DrawText("4.0", 540,415,20, WHITE);
+
+    // Time step
+    DrawText("Time step", 740, 330, 25, WHITE);
+    DrawText("dt", 760, 375, 20, WHITE);
+    DrawText("0.015", 880, 375, 20, WHITE);
+
+    // Start Button
+    Rectangle startButton = {740,500, 300, 65};
+
+    DrawRectangleRec(startButton, DARKGRAY);
+    DrawText("START EXPERIMENT", 765, 520, 20, WHITE);
+
+    EndDrawing();
 }
 
 void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence) {
