@@ -1,6 +1,7 @@
 #include "../include/renderer.h"
 #include "raylib.h"
 #include <cmath>
+#include <forward_list>
 
 Camera2D camera;
 
@@ -12,6 +13,26 @@ void initializeRenderer() {
     camera.offset = {585,350};
     camera.rotation = 0;
     camera.zoom = 2;
+}
+
+void renderHomeScreen() {
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawText("APORIA", 500, 200, 50, WHITE);
+    DrawText("HEAR CHAOS", 450, 270, 30, WHITE);
+
+    Rectangle beginButton = {500, 350, 200, 60};
+
+    DrawRectangleRec(beginButton, DARKGRAY);
+    DrawText("BEGIN", 555, 367, 25, WHITE);
+
+    EndDrawing();
+}
+
+void renderExperimentScreen() {
+
 }
 
 void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence) {

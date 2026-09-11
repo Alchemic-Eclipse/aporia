@@ -5,22 +5,54 @@
 #include "../include/RK4Integrator.h"
 #include "../include/simulation.h"
 #include "../include/analysis.h"
+#include "../include/ExperimentSettings.h"
 #include <raylib.h>
 
+
+enum class Screen {
+    HOME,
+    EXPERIMENT,
+    SIMULATION
+};
+
+
 int main() {
+
+    Screen currentScreen = Screen::HOME;
+
+    ExperimentSettings settings;
+
     DoublePendulum pendulumA;
     DoublePendulum pendulumB;
 
-    pendulumA.parameters={2.0, 1.5, 80.0, 80.0, 9.8};
+    pendulumA.parameters={
+        settings.m1,
+        settings.m2,
+        settings.l1,
+        settings.l2,
+        settings.g
+    };
+
     pendulumB.parameters = pendulumA.parameters;
 
-    pendulumA.state = {3.14, 0.5, 2.0, 4.0};
-    pendulumB.state = {3.14, 0.500001, 2.0, 4.0};
+    pendulumA.state = {
+        settings.theta1, //
+        settings.theta2A, //
+        settings.omega1,
+        settings.omega2
+    };
+
+    pendulumB.state = {
+        settings.theta1,
+        settings.theta2B, //
+        settings.omega1,
+        settings.omega2
+    };
 
     State initialStateA = pendulumA.state;
     State initialStateB = pendulumB.state;
 
-    double dt = 0.015;
+    double dt = settings.dt;
     double time = 0.0;
 
     // EulerIntegrator integrator;
@@ -56,9 +88,30 @@ int main() {
             time = 0.0;
         }
 
-        renderFrame(pendulumA, pendulumB, time, divergence(pendulumA.state, pendulumB.state));
-        // std::cout << divergence(pendulumA.state, pendulumB.state) << std::endl;
-    }   
+        if (currentScreen == Screen::HOME) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Vector2 mouse = GetMousePosition();
+
+                if (CheckCollisionPointRec(mouse, {500,350,200,60})) {
+                    currentScreen = Screen::EXPERIMENT;
+                }
+            }
+
+            renderHomeScreen();
+        }
+
+        else if (currentScreen == Screen::EXPERIMENT) {
+            renderExperimentScreen();
+        }
+
+        else if (currentScreen == Screen::SIMULATION) {
+            renderFrame(
+                pendulumA,
+                pendulumB,
+                time,
+                divergence(pendulumA.state, pendulumB.state));
+        }
+    }
 
     closeRenderer();
 }

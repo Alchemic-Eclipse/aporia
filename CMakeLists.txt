@@ -18,6 +18,7 @@ add_executable(aporia src/main.cpp
         include/simulation.h
         src/simulation.cpp
         include/analysis.h
-        src/analysis.cpp)
+        src/analysis.cpp
+        include/ExperimentSettings.h)
 
 target_link_libraries(aporia PRIVATE raylib)
