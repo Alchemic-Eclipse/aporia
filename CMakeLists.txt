@@ -19,6 +19,8 @@ add_executable(aporia src/main.cpp
         src/simulation.cpp
         include/analysis.h
         src/analysis.cpp
-        include/ExperimentSettings.h)
+        include/ExperimentSettings.h
+        include/sonifier.h
+        src/sonifier.cpp)
 
 target_link_libraries(aporia PRIVATE raylib)

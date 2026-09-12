@@ -6,6 +6,7 @@
 #include "../include/simulation.h"
 #include "../include/analysis.h"
 #include "../include/ExperimentSettings.h"
+#include "../include/sonifier.h"
 #include <raylib.h>
 
 
@@ -22,6 +23,8 @@ int main() {
 
     ExperimentSettings settings;
 
+    Sonifier sonifier;
+
     State initialStateA;
     State initialStateB;
 
@@ -37,6 +40,9 @@ int main() {
 
     // Visual Rendering
     initializeRenderer();
+
+    // Audio Rendering
+    sonifier.initialize();
 
     bool paused = false;
 
@@ -126,10 +132,15 @@ int main() {
                 time = 0.0;
             }
 
+            sonifier.update(pendulumA, pendulumB);
+
             renderFrame(pendulumA, pendulumB, time,
                 divergence(pendulumA.state, pendulumB.state));
         }
     }
 
+    sonifier.close();
     closeRenderer();
+
+    return 0;
 }
