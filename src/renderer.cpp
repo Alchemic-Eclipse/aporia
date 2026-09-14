@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include <cmath>
 #include <string>
+#include "iostream"
 
 Camera2D camera;
 
@@ -16,18 +17,82 @@ void initializeRenderer() {
     camera.zoom = 2;
 }
 
+namespace {
+    constexpr int screenWidth = 1200;
+    constexpr int screenHeight = 800;
+
+    const Color background = {8, 12, 18, 255};
+    const Color primaryText = {218, 239, 244, 255};
+    const Color secondaryText = {154, 190, 202, 255};
+    const Color accent = {91, 176, 196, 255};
+}
+
+
 void renderHomeScreen() {
     BeginDrawing();
 
-    ClearBackground(BLACK);
+    ClearBackground(background);
 
-    DrawText("APORIA", 500, 200, 50, WHITE);
-    DrawText("HEAR CHAOS", 450, 270, 30, WHITE);
 
-    Rectangle beginButton = {500, 350, 200, 60};
 
-    DrawRectangleRec(beginButton, DARKGRAY);
-    DrawText("BEGIN", 555, 367, 25, WHITE);
+    // Main Title
+    const char* title = "APORIA";
+    int titleFontSize = 100;
+    int titleWidth = MeasureText(title, titleFontSize);
+    DrawText(title, (screenWidth - titleWidth)/2 , 120, titleFontSize, primaryText);
+
+
+    // Subtitle
+    const char* subtitle = "HEAR CHAOS";
+    int subtitleFontSize = 33;
+    int subtitleWidth = MeasureText(subtitle, subtitleFontSize);
+    DrawText(subtitle, (screenWidth - subtitleWidth)/2, 235, subtitleFontSize, accent);
+
+    // Decor Line
+    DrawLine(400, 350, 800, 350, Color{45, 60, 70, 255});
+
+
+    // Begin Button
+    float buttonWidth = 300;
+    float buttonHeight = 64;
+
+    Rectangle beginButton = {
+        (1200 - buttonWidth) / 2.0f,
+        570,
+        buttonWidth,
+        buttonHeight
+    };
+
+    Vector2 mouse = GetMousePosition();
+    bool hovered = CheckCollisionPointRec(mouse, beginButton); // Check if hovered
+
+    // Hover Effects
+    Color borderColor = hovered ? secondaryText : accent;
+    Color buttonFill = hovered ? BLACK : background;
+
+    if (hovered)
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); // Pointer Cursor
+    else
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+    // Draw the Button
+    DrawRectangleRec(beginButton, buttonFill);
+    DrawRectangleLinesEx(beginButton, 2, borderColor);
+
+    // Button Text
+    const char* buttonText = "BEGIN EXPERIMENT";
+    int buttonFontSize = 20;
+    int textWidth = MeasureText(buttonText, buttonFontSize);
+    float textX = beginButton.x + (beginButton.width - textWidth) / 2.0f;
+    float textY = beginButton.y + (beginButton.height - buttonFontSize) / 2.0f;
+
+    DrawText(
+        buttonText,
+        static_cast<int>(textX),
+        static_cast<int>(textY),
+        buttonFontSize,
+        primaryText
+    );
 
     EndDrawing();
 }

@@ -52,7 +52,7 @@ int main() {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 Vector2 mouse = GetMousePosition();
 
-                if (CheckCollisionPointRec(mouse, {500,350,200,60})) {
+                if (CheckCollisionPointRec(mouse, {450,570,300,64})) {
                     currentScreen = Screen::EXPERIMENT;
                 }
             }
