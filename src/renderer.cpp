@@ -25,6 +25,13 @@ namespace {
     const Color primaryText = {218, 239, 244, 255};
     const Color secondaryText = {154, 190, 202, 255};
     const Color accent = {91, 176, 196, 255};
+
+    const Color pendulumAColor = {255, 90, 120, 255};
+    const Color pendulumBColor = {90, 210, 255, 255};
+
+    // Indecisive b/w them ;-;
+    // const Color pendulumAColor = {255, 105, 145, 255}; // Neon rose
+    // const Color pendulumBColor = {80, 220, 255, 255};   // Electric cyan
 }
 
 
@@ -289,7 +296,7 @@ void renderExperimentScreen(ExperimentSettings& settings) {
     EndDrawing();
 }
 
-void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence) {
+void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence, double energyError) {
 
     BeginDrawing();
 
@@ -300,31 +307,32 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
         // Draw and calculate A
         double Ax1 = pendulumA.parameters.l1 * std::sin(pendulumA.state.theta1);
         double Ay1 = -pendulumA.parameters.l1 * std::cos(pendulumA.state.theta1);
-        DrawCircle(Ax1,Ay1,7,RED);
+        DrawCircle(Ax1,Ay1,7,pendulumAColor);
 
         double Ax2 = Ax1 + pendulumA.parameters.l2 * std::sin(pendulumA.state.theta2);
         double Ay2 = Ay1 - pendulumA.parameters.l2 * std::cos(pendulumA.state.theta2);
-        DrawCircle(Ax2,Ay2,7,RED);
+        DrawCircle(Ax2,Ay2,7,pendulumAColor);
 
-        DrawLine(0,0,Ax1,Ay1, RED);
-        DrawLine(Ax1,Ay1,Ax2,Ay2, RED);
+        DrawLine(0,0,Ax1,Ay1, pendulumAColor);
+        DrawLine(Ax1,Ay1,Ax2,Ay2, pendulumAColor);
 
         // Draw and Calculate B
         double Bx1 = pendulumB.parameters.l1 * std::sin(pendulumB.state.theta1);
         double By1 = -pendulumB.parameters.l1 * std::cos(pendulumB.state.theta1);
-        DrawCircle(Bx1,By1,7,BLUE);
+        DrawCircle(Bx1,By1,7,pendulumBColor);
 
         double Bx2 = Bx1 + pendulumB.parameters.l2 * std::sin(pendulumB.state.theta2);
         double By2 = By1 - pendulumB.parameters.l2 * std::cos(pendulumB.state.theta2);
-        DrawCircle(Bx2,By2,7,BLUE);
+        DrawCircle(Bx2,By2,7,pendulumBColor);
 
-        DrawLine(0,0,Bx1,By1, BLUE);
-        DrawLine(Bx1,By1,Bx2,By2, BLUE);
+        DrawLine(0,0,Bx1,By1, pendulumBColor);
+        DrawLine(Bx1,By1,Bx2,By2, pendulumBColor);
 
         EndMode2D();
 
-        DrawText(TextFormat("Time: %.2f", time), 20,20,25, WHITE);
-        DrawText(TextFormat("Divergence: %.6f", divergence), 20, 50, 25, WHITE);
+        DrawText(TextFormat("Time: %.2f", time), 20,20,25, primaryText);
+        DrawText(TextFormat("Divergence: %.6f", divergence), 20, 60, 25, primaryText);
+        DrawText(TextFormat("Energy Error: %.9f%%", energyError * 100), 20, 100, 25, primaryText);
 
     EndDrawing();
 }

@@ -20,7 +20,7 @@ void drawParameterBox(const char* label, TextBox& box, int labelX, int boxX, int
 void renderHomeScreen();
 void renderExperimentScreen(ExperimentSettings& settings);
 
-void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence);
+void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence, double energyError);
 
 void closeRenderer();
 

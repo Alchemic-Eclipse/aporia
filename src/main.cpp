@@ -36,14 +36,18 @@ int main() {
     double dt = settings.dt;
     double time = 0.0;  // Start experiment from t = 0
 
-    // EulerIntegrator integrator;
-    RK4Integrator integrator;
+    EulerIntegrator integrator;
+    // RK4Integrator integrator;
 
     // Visual Rendering
     initializeRenderer();
 
     // Audio Rendering
     sonifier.initialize();
+
+    // Energy Rendering
+    double initialEnergyA;
+    double initialEnergyB;
 
     bool paused = false;
 
@@ -98,6 +102,10 @@ int main() {
                     initialStateA = pendulumA.state;
                     initialStateB = pendulumB.state;
 
+                    initialEnergyA = pendulumA.energy(initialStateA);
+                    initialEnergyB = pendulumB.energy(initialStateB);
+
+
                     dt = settings.dt;
                     time = 0.0;  // Reset simulation time
 
@@ -118,13 +126,16 @@ int main() {
             if (!paused) {
                 pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
                 pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+                sonifier.update(pendulumA, pendulumB);
                 time += dt;
             }
 
             if (IsKeyPressed(KEY_N) && paused) {
                 pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
                 pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+                sonifier.update(pendulumA, pendulumB);
                 time += dt;
+
             }
 
             if (IsKeyPressed(KEY_R)) {
@@ -133,10 +144,16 @@ int main() {
                 time = 0.0;
             }
 
-            sonifier.update(pendulumA, pendulumB);
+            double currentEnergyA = pendulumA.energy(pendulumA.state);
+            double currentEnergyB = pendulumA.energy(pendulumB.state);
+
+            double energyError = std::abs((currentEnergyA - initialEnergyA) / initialEnergyA);
+
 
             renderFrame(pendulumA, pendulumB, time,
-                divergence(pendulumA.state, pendulumB.state));
+                divergence(pendulumA.state, pendulumB.state),
+                energyError
+                );
         }
     }
 
