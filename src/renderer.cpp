@@ -29,18 +29,15 @@ namespace {
 
 
 void renderHomeScreen() {
+
     BeginDrawing();
-
     ClearBackground(background);
-
-
 
     // Main Title
     const char* title = "APORIA";
     int titleFontSize = 100;
     int titleWidth = MeasureText(title, titleFontSize);
     DrawText(title, (screenWidth - titleWidth)/2 , 120, titleFontSize, primaryText);
-
 
     // Subtitle
     const char* subtitle = "HEAR CHAOS";
@@ -50,7 +47,6 @@ void renderHomeScreen() {
 
     // Decor Line
     DrawLine(400, 350, 800, 350, Color{45, 60, 70, 255});
-
 
     // Begin Button
     float buttonWidth = 300;
@@ -121,9 +117,19 @@ void updateTextBox(TextBox& box) {
 
 void drawTextBox(const TextBox &box) {
 
-    DrawRectangleRec(box.bounds, BLACK);    // Draw a color filled rectangle
+    Vector2 mouse = GetMousePosition();
+    bool hovered = CheckCollisionPointRec(mouse, box.bounds);
 
-    Color borderColor = box.active ? WHITE : GRAY;      // condition ? ifTrue : ifFalse
+    Color borderColor =
+        box.active ? primaryText :
+        hovered ? secondaryText :
+        accent;
+    Color fillColor =
+        box.active ? BLACK :
+        hovered ? BLACK :
+        background;
+
+    DrawRectangleRec(box.bounds, fillColor);    // Draw a color filled rectangle
     DrawRectangleLinesEx(box.bounds, 2, borderColor);   // Draw the borders of that rectangle
 
     DrawText(       // Draw the text inside that rectangle
@@ -131,14 +137,14 @@ void drawTextBox(const TextBox &box) {
         box.bounds.x + 10,     // Padding
         box.bounds.y + 8,      // Padding
         20,
-        WHITE
+        primaryText
     );
 }
 
 // Reusable func to combine different tasks into one
 void drawParameterBox(const char* label, TextBox& box, int labelX, int boxX, int y) {
 
-    DrawText(label, labelX, y+8, 25, WHITE);
+    DrawText(label, labelX, y+8, 25, secondaryText);
 
     box.bounds = {
         static_cast<float>(boxX),       // Top left corner X position
@@ -172,8 +178,8 @@ double readDouble(const TextBox& box, double currentValue) {
 void renderExperimentScreen(ExperimentSettings& settings) {
 
     BeginDrawing();
-
-    ClearBackground(BLACK);
+    // SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    ClearBackground(background);
 
     // Drawing Text Boxes
 
@@ -195,7 +201,6 @@ void renderExperimentScreen(ExperimentSettings& settings) {
 
     static TextBox dtBox = {{0,0,0,0}, "0.015"};
 
-
     settings.m1 = readDouble(m1Box, settings.m1);       // Take the text inside m1Box, covert it into a double, and put that into settings.m1
     settings.m2 = readDouble(m2Box, settings.m2);
 
@@ -216,41 +221,70 @@ void renderExperimentScreen(ExperimentSettings& settings) {
 
 
 
-    DrawText("APORIA", 60, 40, 40, WHITE);
-    DrawText("EXPERIMENT SETUP", 60,100,30, WHITE);
+    DrawText("APORIA", 40, 40, 50, primaryText);
+    DrawText("EXPERIMENT SETUP", 40,110,30, secondaryText);
 
     // Mass
-    DrawText("MASS", 60, 170, 25, WHITE);
-    drawParameterBox("m1", m1Box, 80, 200, 215);
-    drawParameterBox("m2", m2Box, 80, 200, 255);
+    DrawText("MASS", 60, 200, 25, WHITE);
+    drawParameterBox("m1", m1Box, 80, 200, 255);
+    drawParameterBox("m2", m2Box, 80, 200, 305);
 
     // Length
-    DrawText("LENGTH", 400, 170, 25, WHITE);
-    drawParameterBox("l1", l1Box, 420, 520, 215);
-    drawParameterBox("l2", l2Box, 420, 520, 255);
+    DrawText("LENGTH", 400, 200, 25, WHITE);
+    drawParameterBox("l1", l1Box, 420, 520, 255);
+    drawParameterBox("l2", l2Box, 420, 520, 305);
 
     // Gravity
-    DrawText("Gravity", 740, 170, 25, WHITE);
-    drawParameterBox("g", gBox, 760, 880, 215);
+    DrawText("Gravity", 740, 200, 25, WHITE);
+    drawParameterBox("g", gBox, 760, 880, 255);
 
     // Initial Conditions
-    DrawText("Initial Conditions", 60, 330,25, WHITE);
-    drawParameterBox("theta1", theta1Box, 80, 200, 375);
-    drawParameterBox("theta2 A", theta2ABox, 80, 200, 415);
-    drawParameterBox("theta2 B", theta2BBox, 80, 200, 455);
+    DrawText("Initial Conditions", 60, 385,25, WHITE);
+    drawParameterBox("theta1", theta1Box, 80, 200, 440);
+    drawParameterBox("theta2 A", theta2ABox, 80, 200, 490);
+    drawParameterBox("theta2 B", theta2BBox, 80, 200, 540);
 
-    drawParameterBox("omega1", omega1Box, 420, 540, 375);
-    drawParameterBox("omega2", omega2Box, 420, 540, 415);
+    drawParameterBox("omega1", omega1Box, 420, 540, 440);
+    drawParameterBox("omega2", omega2Box, 420, 540, 490);
 
     // Time step
-    DrawText("Time step", 740, 330, 25, WHITE);
-    drawParameterBox("dt", dtBox, 760, 880, 375);
+    DrawText("Time step", 740, 385, 25, WHITE);
+    drawParameterBox("dt", dtBox, 760, 880, 440);
 
     // Start Button
-    Rectangle startButton = {740,500, 300, 65};
+    Rectangle startButton = {800,670, 300, 65};
 
-    DrawRectangleRec(startButton, DARKGRAY);
-    DrawText("START EXPERIMENT", 765, 520, 20, WHITE);
+
+    Vector2 mouse = GetMousePosition();
+    bool hovered = CheckCollisionPointRec(mouse, startButton); // Check if hovered
+
+    // Hover Effects
+    Color borderColor = hovered ? secondaryText : accent;
+    Color buttonFill = hovered ? BLACK : background;
+
+    if (hovered)
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); // Pointer Cursor
+    else
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+
+    DrawRectangleRec(startButton, buttonFill);
+    DrawRectangleLinesEx(startButton, 2, borderColor);
+
+    // Start Button Text
+    const char* buttonText = "START EXPERIMENT";
+    int buttonFontSize = 20;
+
+    int textWidth = MeasureText(buttonText, buttonFontSize);
+    float textX = startButton.x + (startButton.width - textWidth) / 2.0f;
+    float textY = startButton.y + (startButton.height - buttonFontSize) / 2.0f;
+
+    DrawText(buttonText,
+        static_cast<int>(textX),
+        static_cast<int>(textY),
+        buttonFontSize,
+        primaryText
+        );
 
     EndDrawing();
 }
@@ -259,12 +293,11 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
 
     BeginDrawing();
 
-        ClearBackground(BLACK);
+        ClearBackground(background);
 
         BeginMode2D(camera);
 
         // Draw and calculate A
-
         double Ax1 = pendulumA.parameters.l1 * std::sin(pendulumA.state.theta1);
         double Ay1 = -pendulumA.parameters.l1 * std::cos(pendulumA.state.theta1);
         DrawCircle(Ax1,Ay1,7,RED);
@@ -277,7 +310,6 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
         DrawLine(Ax1,Ay1,Ax2,Ay2, RED);
 
         // Draw and Calculate B
-
         double Bx1 = pendulumB.parameters.l1 * std::sin(pendulumB.state.theta1);
         double By1 = -pendulumB.parameters.l1 * std::cos(pendulumB.state.theta1);
         DrawCircle(Bx1,By1,7,BLUE);
@@ -291,7 +323,7 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
 
         EndMode2D();
 
-        DrawText(TextFormat("Time: %.2f", time), 20,20,25,WHITE);
+        DrawText(TextFormat("Time: %.2f", time), 20,20,25, WHITE);
         DrawText(TextFormat("Divergence: %.6f", divergence), 20, 50, 25, WHITE);
 
     EndDrawing();

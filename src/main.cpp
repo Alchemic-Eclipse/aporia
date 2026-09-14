@@ -21,6 +21,7 @@ int main() {
 
     Screen currentScreen = Screen::HOME;
 
+
     ExperimentSettings settings;
 
     Sonifier sonifier;
@@ -66,7 +67,7 @@ int main() {
 
                 Vector2 mouse = GetMousePosition();
 
-                if (CheckCollisionPointRec(mouse, {740, 500, 300, 65})) {
+                if (CheckCollisionPointRec(mouse, {800,670, 300, 65})) {
 
                     // Apply settings to both pendulums
                     pendulumA.parameters={
