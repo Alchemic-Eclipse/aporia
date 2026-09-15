@@ -55,7 +55,7 @@ int main() {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 Vector2 mouse = GetMousePosition();
 
-                if (CheckCollisionPointRec(mouse, {450,570,300,64})) {
+                if (CheckCollisionPointRec(mouse, {450, 570, 300, 64})) {
                     currentScreen = Screen::EXPERIMENT;
                 }
             }
@@ -69,7 +69,7 @@ int main() {
 
                 Vector2 mouse = GetMousePosition();
 
-                if (CheckCollisionPointRec(mouse, {800,670, 300, 65})) {
+                if (CheckCollisionPointRec(mouse, {800, 670, 300, 65})) {
 
                     // Apply settings to both pendulums
                     pendulumA.parameters={
