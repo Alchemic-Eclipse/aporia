@@ -50,6 +50,7 @@ int main() {
     double initialEnergyB;
 
     bool paused = false;
+    bool showControls = false;
 
     while(!WindowShouldClose()) {
 
@@ -111,6 +112,7 @@ int main() {
 
                     // Enter the simulation
                     currentScreen = Screen::SIMULATION;
+                    showControls = false;
                 }
             }
 
@@ -165,10 +167,27 @@ int main() {
 
             double energyError = std::abs((currentEnergyA - initialEnergyA) / initialEnergyA);
 
-            renderFrame(pendulumA, pendulumB, time,
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Vector2 mouse = GetMousePosition();
+
+                if (CheckCollisionPointRec(mouse, {1040, 20, 130, 40})) {
+                    showControls = !showControls;
+                }
+            }
+
+            renderSimulation(pendulumA, pendulumB, time,
                 divergence(pendulumA.state, pendulumB.state),
                 energyError
                 );
+
+            if (showControls) {
+                renderControlsOverlay();
+            }
+
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                showControls = !showControls;
+            }
+
         }
     }
 

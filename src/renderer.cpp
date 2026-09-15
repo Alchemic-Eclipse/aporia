@@ -99,7 +99,6 @@ void renderHomeScreen() {
     EndDrawing();
 }
 
-
 void updateTextBox(TextBox& box) {
     Vector2 mouse = GetMousePosition();
 
@@ -223,9 +222,6 @@ void renderExperimentScreen(ExperimentSettings& settings) {
 
     settings.dt = readDouble(dtBox, settings.dt);
 
-
-
-
     DrawText("APORIA", 40, 40, 50, primaryText);
     DrawText("EXPERIMENT SETUP", 40,110,30, secondaryText);
 
@@ -258,7 +254,6 @@ void renderExperimentScreen(ExperimentSettings& settings) {
 
     // Start Button
     Rectangle startButton = {800,670, 300, 65};
-
 
     Vector2 mouse = GetMousePosition();
     bool hovered = CheckCollisionPointRec(mouse, startButton); // Check if hovered
@@ -294,7 +289,7 @@ void renderExperimentScreen(ExperimentSettings& settings) {
     EndDrawing();
 }
 
-void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence, double energyError) {
+void renderSimulation(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB, double time, double divergence, double energyError) {
 
     BeginDrawing();
 
@@ -333,7 +328,67 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
         DrawText(TextFormat("Time: %.2f", time), 20,20,25, primaryText);
         DrawText(TextFormat("Divergence: %.6f", divergence), 20, 60, 25, primaryText);
         DrawText(TextFormat("Energy Error: %.9f%%", energyError * 100), 20, 100, 25, primaryText);
+
+        Rectangle controlButton = {1040, 20, 130, 40};
+
+        Vector2 mouse = GetMousePosition();
+        bool hovered = CheckCollisionPointRec(mouse, controlButton);
+
+        // Hover Effects
+        Color borderColor = hovered ? secondaryText : accent;
+        Color buttonFill = hovered ? BLACK : background;
+
+        if (hovered)
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND); // Pointer Cursor
+        else
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+        const char* buttonText = "Controls";
+        int buttonFontSize = 20;
+
+        int textWidth = MeasureText(buttonText, buttonFontSize);
+        float textX = controlButton.x + (controlButton.width - textWidth) / 2.0f;
+        float textY = controlButton.y + (controlButton.height - buttonFontSize) / 2.0f;
+
+        DrawRectangleRec(controlButton, buttonFill);
+        DrawRectangleLinesEx(controlButton, 2, borderColor);
+
+        DrawText(buttonText,
+            static_cast<int>(textX),
+            static_cast<int>(textY),
+            buttonFontSize,
+            primaryText
+            );
+
     EndDrawing();
+}
+
+void renderControlsOverlay() {
+    DrawRectangle(250, 140, 700, 540, background);
+    DrawRectangleLines(250, 140, 700, 520, accent);
+
+    DrawText("Controls", 290, 180, 32, primaryText);
+
+    DrawText("Space", 310, 250, 24, accent);
+    DrawText("Pause/Resume", 470, 250, 24, primaryText);
+
+    DrawText("N", 310, 300, 24, accent);
+    DrawText("Advance one timestep while paused", 470, 300, 24, primaryText);
+
+    DrawText("R", 310, 350, 24, accent);
+    DrawText("Reset simulation", 470, 350, 24, primaryText);
+
+    DrawText("M", 310, 400, 24, accent);
+    DrawText("Mute/Unmute", 470, 400, 24, primaryText);
+
+    DrawText("Backspace", 310, 450, 24, accent);
+    DrawText("Return to experiment settings", 470, 450, 24, primaryText);
+
+    DrawText("H", 310, 500, 24, accent);
+    DrawText("Return to Home screen", 470, 500, 24, primaryText);
+
+    DrawText("Click Controls or press ESC to close", 310, 595, 20, secondaryText);
+
 }
 
 void closeRenderer() {
