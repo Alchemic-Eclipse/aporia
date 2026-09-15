@@ -15,7 +15,7 @@ The answer, as usual, is that physics has a rather dramatic sense of humor. (exa
 
 ## What it does
 
-Aporia ~~stimulates~~ simulates two double pendulums with the same physical parameters but slightly different initial conditions
+Aporia simulates two double pendulums with the same physical parameters but slightly different initial conditions
 
 For example, both pendulums start with the same angles, masses, lengths, and angular velocities, except for a tiny difference in one angle:
 
@@ -147,7 +147,25 @@ I may add them in the future, but for now, the main experiment is working:
 
 ## Screenshots
 
+### Home screen
+
+![Aporia home screen](assets/home.png)
+
+### Experiment setup
+
+![Experiment setup screen](assets/setup.png)
+
+### Simulation
+
+![Aporia simulation](assets/simulation.png)
+
+
 ---
 
-Thank you ❤️‍🩹
+### And,,,,, Thank you for reading this through ❤️‍🩹<br>
+~ Regards 
+
+
+Made by me, with ♥️ 
+
 
