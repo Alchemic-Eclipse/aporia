@@ -52,11 +52,11 @@ void generateSamples(
 
         if (phase >= 2.0f * PI)
             phase -= 2.0f * PI;
+
     }
 }
 
 void Sonifier::update(const DoublePendulum &pendulumA, const DoublePendulum &pendulumB) {
-
     frequencyA = thetaToFrequency(pendulumA.state.theta2);
     frequencyB = thetaToFrequency(pendulumB.state.theta2);
 
@@ -92,7 +92,7 @@ void Sonifier::update(const DoublePendulum &pendulumA, const DoublePendulum &pen
     }
 
     if (IsAudioStreamProcessed(streamB)) {
-        generateSamples(bufferB, frequencyB, amplitudeA, phaseB, 44100);
+        generateSamples(bufferB, frequencyB, amplitudeB, phaseB, 44100);
         UpdateAudioStream(streamB, bufferB.data(), sampleCount);
     }
 
@@ -114,4 +114,18 @@ float Sonifier::omegaToAmplitude(double omega) {
     double normalized = std::min(speed / 10.0, 1.0);
 
     return minAmplitude + static_cast<float>(normalized) * (maxAmplitude - minAmplitude);
+}
+
+
+void Sonifier::toggleMute() {
+    muted = !muted;
+
+    if (muted) {
+        PauseAudioStream(streamA);
+        PauseAudioStream(streamB);
+    }
+    else {
+        ResumeAudioStream(streamA);
+        ResumeAudioStream(streamB);
+    }
 }

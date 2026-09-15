@@ -9,6 +9,7 @@ public:
     void initialize();
     void update(const DoublePendulum& pendulumA, const DoublePendulum& pendulumB);
     void close();
+    void toggleMute();
 
 private:
 
@@ -26,8 +27,11 @@ private:
     bool streamAStarted = false;
     bool streamBStarted = false;
 
+    bool muted = false;
+
     float thetaToFrequency(double theta);
 
     float omegaToAmplitude(double omega);
+
 
 };

@@ -36,8 +36,8 @@ int main() {
     double dt = settings.dt;
     double time = 0.0;  // Start experiment from t = 0
 
-    EulerIntegrator integrator;
-    // RK4Integrator integrator;
+    // EulerIntegrator integrator;
+    RK4Integrator integrator;
 
     // Visual Rendering
     initializeRenderer();
@@ -114,6 +114,10 @@ int main() {
                 }
             }
 
+            if (IsKeyPressed(KEY_H)) {
+                currentScreen = Screen::HOME;
+            }
+
             renderExperimentScreen(settings);
         }
 
@@ -144,11 +148,22 @@ int main() {
                 time = 0.0;
             }
 
+            if (IsKeyPressed(KEY_BACKSPACE)) {
+                currentScreen = Screen::EXPERIMENT;
+            }
+
+            if (IsKeyPressed(KEY_H)) {
+                currentScreen = Screen::HOME;
+            }
+
+            if (IsKeyPressed(KEY_M)) {
+                sonifier.toggleMute();
+            }
+
             double currentEnergyA = pendulumA.energy(pendulumA.state);
             double currentEnergyB = pendulumA.energy(pendulumB.state);
 
             double energyError = std::abs((currentEnergyA - initialEnergyA) / initialEnergyA);
-
 
             renderFrame(pendulumA, pendulumB, time,
                 divergence(pendulumA.state, pendulumB.state),

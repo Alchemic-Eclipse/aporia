@@ -34,7 +34,6 @@ namespace {
     // const Color pendulumBColor = {80, 220, 255, 255};   // Electric cyan
 }
 
-
 void renderHomeScreen() {
 
     BeginDrawing();
@@ -181,7 +180,6 @@ double readDouble(const TextBox& box, double currentValue) {
     }
 }
 
-
 void renderExperimentScreen(ExperimentSettings& settings) {
 
     BeginDrawing();
@@ -302,6 +300,8 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
 
         ClearBackground(background);
 
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
         BeginMode2D(camera);
 
         // Draw and calculate A
@@ -333,7 +333,6 @@ void renderFrame(const DoublePendulum& pendulumA, const DoublePendulum& pendulum
         DrawText(TextFormat("Time: %.2f", time), 20,20,25, primaryText);
         DrawText(TextFormat("Divergence: %.6f", divergence), 20, 60, 25, primaryText);
         DrawText(TextFormat("Energy Error: %.9f%%", energyError * 100), 20, 100, 25, primaryText);
-
     EndDrawing();
 }
 
