@@ -100,6 +100,7 @@ void renderHomeScreen() {
 }
 
 void updateTextBox(TextBox& box) {
+
     Vector2 mouse = GetMousePosition();
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -164,6 +165,7 @@ void drawParameterBox(const char* label, TextBox& box, int labelX, int boxX, int
 
 // Take whatever the user typed and try to turn it into a double
 double readDouble(const TextBox& box, double currentValue) {
+
     try {
         size_t charactersRead = 0;      // Variable keeping track of how many chars stod() successfully understood
         double value = std::stod(box.text, &charactersRead);    // convert String to double and tell how many you successfully understood
@@ -364,6 +366,7 @@ void renderSimulation(const DoublePendulum& pendulumA, const DoublePendulum& pen
 }
 
 void renderControlsOverlay() {
+
     DrawRectangle(250, 140, 700, 540, background);
     DrawRectangleLines(250, 140, 700, 520, accent);
 

@@ -1,9 +1,7 @@
 #include <iostream>
 #include "../include/DoublePendulum.h"
-#include "../include/EulerIntegrator.h"
 #include "../include/renderer.h"
 #include "../include/RK4Integrator.h"
-#include "../include/simulation.h"
 #include "../include/analysis.h"
 #include "../include/ExperimentSettings.h"
 #include "../include/sonifier.h"
@@ -20,7 +18,6 @@ enum class Screen {
 int main() {
 
     Screen currentScreen = Screen::HOME;
-
 
     ExperimentSettings settings;
 
@@ -106,13 +103,13 @@ int main() {
                     initialEnergyA = pendulumA.energy(initialStateA);
                     initialEnergyB = pendulumB.energy(initialStateB);
 
-
                     dt = settings.dt;
                     time = 0.0;  // Reset simulation time
 
                     // Enter the simulation
                     currentScreen = Screen::SIMULATION;
                     showControls = false;
+                    paused = false;
                 }
             }
 
@@ -163,7 +160,7 @@ int main() {
             }
 
             double currentEnergyA = pendulumA.energy(pendulumA.state);
-            double currentEnergyB = pendulumA.energy(pendulumB.state);
+            double currentEnergyB = pendulumB.energy(pendulumB.state);
 
             double energyError = std::abs((currentEnergyA - initialEnergyA) / initialEnergyA);
 
