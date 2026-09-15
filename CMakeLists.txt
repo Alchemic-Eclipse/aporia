@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 find_package(raylib REQUIRED)
 
-add_executable(aporia src/main.cpp
+add_executable(aporia MACOSX_BUNDLE
+        src/main.cpp
         src/DoublePendulum.cpp
         include/DoublePendulum.h
         include/EulerIntegrator.h

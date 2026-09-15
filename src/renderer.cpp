@@ -390,7 +390,7 @@ void renderControlsOverlay() {
     DrawText("H", 310, 500, 24, accent);
     DrawText("Return to Home screen", 470, 500, 24, primaryText);
 
-    DrawText("Click Controls or press ESC to close", 310, 595, 20, secondaryText);
+    DrawText("Click Controls or press C to close", 310, 595, 20, secondaryText);
 
 }
 

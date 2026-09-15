@@ -162,6 +162,12 @@ I may add them in the future, but for now, the main experiment is working:
 
 ---
 
+## Installation
+
+- Go to the releases tab of this repository.
+- Select the file according to your OS (latest release)
+- Download the file and simply run it :)
+
 ### And,,,,, Thank you for reading this through ❤️‍🩹<br>
 ~ Regards 
 
