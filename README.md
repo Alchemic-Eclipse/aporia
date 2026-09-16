@@ -178,7 +178,7 @@ If that happens:
 
 If macOS still reports that the app is damaged.
 - Open Terminal
-- Run `xattr -dr com.apple.quarantine "/Applications/aporia.app"`
+- Run `xattr -dr com.apple.quarantine "/Applications/Aporia.app"`
 - And run the app again.
 
 ---
