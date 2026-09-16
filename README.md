@@ -172,7 +172,7 @@ I may add them in the future, but for now, the main experiment is working:
 Since this app is currently unsigned and not notarized, macOS may prevent it from opening after download.
 
 If that happens:
-- Move `aporia.app` to Applications
+- Move `Aporia.app` to Applications
 - Right click it
 - Choose "Open" and confirm
 
