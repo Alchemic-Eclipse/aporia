@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 4.3)
+
+set(CMAKE_OSX_DEPLOYMENT_TARGET "26.0" CACHE STRING "Minimum macOS version")
+
 project(aporia)
 
 set(CMAKE_CXX_STANDARD 23)
