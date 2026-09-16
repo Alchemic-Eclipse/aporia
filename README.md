@@ -171,7 +171,7 @@ That's all :)
 
 ---
 
-## Installation (Only for macOS)
+## Installation (Only for macOS Tahoe and later) 
 
 - Go to the releases section (below the About)
 - Select "Aporia V1.0"
