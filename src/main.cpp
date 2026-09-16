@@ -181,7 +181,7 @@ int main() {
                 renderControlsOverlay();
             }
 
-            if (IsKeyPressed(KEY_C)) {
+            if (IsKeyPressed(KEY_C )) {
                 showControls = !showControls;
             }
 

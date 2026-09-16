@@ -26,7 +26,7 @@ theta2 B = 0.5000000001
 In case you're curious, that difference is roughly an atomic-scale displacement if the pendulum length is around a metre.
 
 At first, their motion looks almost identical. But as time passes, the trajectories diverge.<br>
-(With default config, they couldn't even last a minute together 🥀💔)
+(with default config, they couldn't even last a minute together 🥀💔)
 
 The simulation also tracks:
 
@@ -162,16 +162,25 @@ I may add them in the future, but for now, the main experiment is working:
 
 ---
 
-## Installation
+## Installation (Only for macOS)
 
-- Go to the releases tab of this repository.
-- Select the file according to your OS (latest release)
-- Download the file and simply run it :)
+- Go to the releases section (below the About)
+- Select "Aporia V1.0"
+- Download the file (aporia.app.zip) and simply run it :)
 
-### And,,,,, Thank you for reading this through ❤️‍🩹<br>
-~ Regards 
+### Note:
+Since this app is currently unsigned and not notarized, macOS may prevent it from opening after download.
 
+If that happens:
+- Move `aporia.app` to Applications
+- Right click it
+- Choose "Open" and confirm
 
-Made by me, with ♥️ 
+If macOS still reports that the app is damaged.
+- Run `xattr -dr com.apple.quarantine "/Applications/aporia.app"`
+- And run the app again.
 
+---
 
+### And with that,,,,, Thank you for trying out my project!! 🦋️<br>
+~ It has been an honor... 🍀
