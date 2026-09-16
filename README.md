@@ -161,6 +161,15 @@ I may add them in the future, but for now, the main experiment is working:
 
 
 ---
+## AI Usage
+
+AI is used while developing Aporia, for:
+- Debugging code
+- Learnings about Raylib functions
+
+That's all :)
+
+---
 
 ## Installation (Only for macOS)
 
