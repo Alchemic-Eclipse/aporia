@@ -1,0 +1,36 @@
+name: Build Aporia for Windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install raylib
+        run: vcpkg install raylib:x64-windows
+
+      - name: Configure CMake
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Build Aporia
+        run: cmake --build build --config Release
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: aporia-windows-x64
+          path: build/Release/aporia.exe
+          if-no-files-found: error
