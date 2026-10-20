@@ -171,7 +171,7 @@ That's all :)
 
 ---
 
-## Installation (Only for macOS)
+## Installation (Only for macOS Tahoe and later) 
 
 - Go to the releases section (below the About)
 - Select "Aporia V1.0"
@@ -187,7 +187,7 @@ If that happens:
 
 If macOS still reports that the app is damaged.
 - Open Terminal
-- Run `xattr -dr com.apple.quarantine "/Applications/Aporia.app"`
+- Run `sudo xattr -dr com.apple.quarantine "/Applications/Aporia.app"`
 - And run the app again.
 
 ---
