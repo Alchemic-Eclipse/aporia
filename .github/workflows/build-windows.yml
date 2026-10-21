@@ -37,7 +37,19 @@ jobs:
       - name: Check runtime dependencies
         shell: pwsh
         run: |
-          dumpbin /DEPENDENTS build/Release/aporia.exe
+          $dumpbin = Get-ChildItem `
+            "C:\Program Files\Microsoft Visual Studio" `
+            -Filter dumpbin.exe `
+            -Recurse `
+            -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\Hostx64\\x64\\dumpbin\.exe$' } |
+            Select-Object -First 1
+
+          if ($dumpbin) {
+            & $dumpbin.FullName /DEPENDENTS "build/Release/aporia.exe"
+          } else {
+            Write-Host "dumpbin unavailable; skipping optional dependency inspection."
+          }
 
       - name: Package Aporia
         shell: pwsh
