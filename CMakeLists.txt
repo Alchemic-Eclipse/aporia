@@ -13,6 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(raylib CONFIG REQUIRED)
 
+if(WIN32)
+    find_package(glfw3 CONFIG REQUIRED)
+endif()
+
 set(APORIA_SOURCES
         src/main.cpp
         src/DoublePendulum.cpp
@@ -39,7 +43,11 @@ else()
     add_executable(aporia ${APORIA_SOURCES})
 endif()
 
-target_link_libraries(aporia PRIVATE raylib)
+if(WIN32)
+    target_link_libraries(aporia PRIVATE raylib glfw)
+else()
+    target_link_libraries(aporia PRIVATE raylib)
+endif()
 
 if(APPLE)
     set(RAYLIB_DYLIB

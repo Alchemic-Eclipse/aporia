@@ -17,10 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install raylib (static)
+      - name: Install raylib and GLFW
         shell: pwsh
         run: |
-          vcpkg install raylib:x64-windows-static
+          vcpkg install raylib:x64-windows-static glfw3:x64-windows-static
 
       - name: Configure CMake
         shell: pwsh
@@ -28,7 +28,8 @@ jobs:
           cmake -S . -B build `
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows-static
+            -DVCPKG_TARGET_TRIPLET=x64-windows-static `
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 
       - name: Build Aporia
         run: cmake --build build --config Release
@@ -36,14 +37,14 @@ jobs:
       - name: Check runtime dependencies
         shell: pwsh
         run: |
-          $exe = Resolve-Path "build/Release/aporia.exe"
-          dumpbin /DEPENDENTS $exe
+          dumpbin /DEPENDENTS build/Release/aporia.exe
 
       - name: Package Aporia
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item "build/Release/aporia.exe" "dist/aporia.exe"
+          Copy-Item build/Release/aporia.exe dist/aporia.exe
+          Get-ChildItem dist
 
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
