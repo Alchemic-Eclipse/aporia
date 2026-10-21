@@ -1,3 +1,4 @@
+
 name: Build Aporia for Windows
 
 on:
@@ -28,9 +29,28 @@ jobs:
       - name: Build Aporia
         run: cmake --build build --config Release
 
-      - name: Upload build output
+      - name: Package Aporia
+        shell: pwsh
+        run: |
+          $out = "dist"
+          New-Item -ItemType Directory -Force $out | Out-Null
+
+          Copy-Item "build/Release/aporia.exe" $out
+
+          $dllDir = "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows/bin"
+
+          if (!(Test-Path "$dllDir/raylib.dll")) {
+            throw "raylib.dll was not found in $dllDir"
+          }
+
+          Get-ChildItem $dllDir -Filter "*.dll" |
+            Copy-Item -Destination $out -Force
+
+          Get-ChildItem $out
+
+      - name: Upload Windows package
         uses: actions/upload-artifact@v4
         with:
           name: aporia-windows-x64
-          path: build/Release/aporia.exe
+          path: dist/
           if-no-files-found: error
