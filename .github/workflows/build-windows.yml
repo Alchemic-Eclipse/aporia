@@ -17,40 +17,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install raylib
-        run: vcpkg install raylib:x64-windows
+      - name: Install raylib (static)
+        shell: pwsh
+        run: |
+          vcpkg install raylib:x64-windows-static
 
       - name: Configure CMake
-        run: >
-          cmake -S . -B build
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows-static
 
       - name: Build Aporia
         run: cmake --build build --config Release
 
+      - name: Check runtime dependencies
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path "build/Release/aporia.exe"
+          dumpbin /DEPENDENTS $exe
+
       - name: Package Aporia
         shell: pwsh
         run: |
-          $out = "dist"
-          New-Item -ItemType Directory -Force $out | Out-Null
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item "build/Release/aporia.exe" "dist/aporia.exe"
 
-          Copy-Item "build/Release/aporia.exe" $out
-
-          $dllDir = "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows/bin"
-
-          if (!(Test-Path "$dllDir/raylib.dll")) {
-            throw "raylib.dll was not found in $dllDir"
-          }
-
-          Get-ChildItem $dllDir -Filter "*.dll" |
-            Copy-Item -Destination $out -Force
-
-          Get-ChildItem $out
-
-      - name: Upload Windows package
+      - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
           name: aporia-windows-x64
-          path: dist/
+          path: dist/aporia.exe
           if-no-files-found: error
