@@ -9,7 +9,7 @@ Camera2D camera;
 
 void initializeRenderer() {
     InitWindow(1200, 800, "Aporia");
-    SetTargetFPS(120);
+    SetTargetFPS(60);
 
     camera.target = {0,0};
     camera.offset = {585,350};
@@ -20,6 +20,8 @@ void initializeRenderer() {
 namespace {
     constexpr int screenWidth = 1200;
     constexpr int screenHeight = 800;
+
+    constexpr double pixelsPerMeter = 100.0;
 
     const Color background = {8, 12, 18, 255};
     const Color primaryText = {218, 239, 244, 255};
@@ -193,17 +195,17 @@ void renderExperimentScreen(ExperimentSettings& settings) {
     static TextBox m1Box = {{0,0,0,0}, "2.0"};
     static TextBox m2Box = {{0,0,0,0}, "1.5"};
 
-    static TextBox l1Box = {{0,0,0,0}, "80.0"};
-    static TextBox l2Box = {{0,0,0,0}, "80.0"};
+    static TextBox l1Box = {{0,0,0,0}, "0.8"};
+    static TextBox l2Box = {{0,0,0,0}, "0.8"};
 
     static TextBox gBox = {{0,0,0,0}, "9.8"};
 
-    static TextBox theta1Box = {{0,0,0,0}, "3.14"};
-    static TextBox theta2ABox = {{0,0,0,0}, "0.5"};
-    static TextBox theta2BBox = {{0,0,0,0}, "0.5000000001"};
+    static TextBox theta1Box = {{0,0,0,0}, "3"};
+    static TextBox theta2ABox = {{0,0,0,0}, "2"};
+    static TextBox theta2BBox = {{0,0,0,0}, "2.0000000001"};
 
-    static TextBox omega1Box = {{0,0,0,0}, "2.0"};
-    static TextBox omega2Box = {{0,0,0,0}, "4.0"};
+    static TextBox omega1Box = {{0,0,0,0}, "0.0"};
+    static TextBox omega2Box = {{0,0,0,0}, "0.0"};
 
     static TextBox dtBox = {{0,0,0,0}, "0.015"};
 
@@ -301,25 +303,39 @@ void renderSimulation(const DoublePendulum& pendulumA, const DoublePendulum& pen
 
         BeginMode2D(camera);
 
-        // Draw and calculate A
-        double Ax1 = pendulumA.parameters.l1 * std::sin(pendulumA.state.theta1);
-        double Ay1 = -pendulumA.parameters.l1 * std::cos(pendulumA.state.theta1);
-        DrawCircle(Ax1,Ay1,7,pendulumAColor);
+        double Ax1 = pixelsPerMeter * pendulumA.parameters.l1
+            * std::sin(pendulumA.state.theta1);
 
-        double Ax2 = Ax1 + pendulumA.parameters.l2 * std::sin(pendulumA.state.theta2);
-        double Ay2 = Ay1 - pendulumA.parameters.l2 * std::cos(pendulumA.state.theta2);
+        double Ay1 = pixelsPerMeter * pendulumA.parameters.l1
+                   * std::cos(pendulumA.state.theta1);
+
+        DrawCircle(Ax1, Ay1, 7, pendulumAColor);
+
+        double Ax2 = Ax1 + pixelsPerMeter * pendulumA.parameters.l2
+                   * std::sin(pendulumA.state.theta2);
+
+        double Ay2 = Ay1 + pixelsPerMeter * pendulumA.parameters.l2
+               * std::cos(pendulumA.state.theta2);
+
         DrawCircle(Ax2,Ay2,7,pendulumAColor);
 
         DrawLine(0,0,Ax1,Ay1, pendulumAColor);
         DrawLine(Ax1,Ay1,Ax2,Ay2, pendulumAColor);
 
         // Draw and Calculate B
-        double Bx1 = pendulumB.parameters.l1 * std::sin(pendulumB.state.theta1);
-        double By1 = -pendulumB.parameters.l1 * std::cos(pendulumB.state.theta1);
-        DrawCircle(Bx1,By1,7,pendulumBColor);
+        double Bx1 = pixelsPerMeter * pendulumB.parameters.l1
+           * std::sin(pendulumB.state.theta1);
 
-        double Bx2 = Bx1 + pendulumB.parameters.l2 * std::sin(pendulumB.state.theta2);
-        double By2 = By1 - pendulumB.parameters.l2 * std::cos(pendulumB.state.theta2);
+        double By1 = pixelsPerMeter * pendulumB.parameters.l1
+                   * std::cos(pendulumB.state.theta1);
+
+        DrawCircle(Bx1, By1, 7, pendulumBColor);
+
+        double Bx2 = Bx1 + pixelsPerMeter * pendulumB.parameters.l2
+                   * std::sin(pendulumB.state.theta2);
+
+        double By2 = By1 + pixelsPerMeter * pendulumB.parameters.l2
+                   * std::cos(pendulumB.state.theta2);
         DrawCircle(Bx2,By2,7,pendulumBColor);
 
         DrawLine(0,0,Bx1,By1, pendulumBColor);

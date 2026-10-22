@@ -25,7 +25,7 @@ set(APORIA_SOURCES
         src/EulerIntegrator.cpp
         src/renderer.cpp
         include/renderer.h
-        include/Integrator.h
+        include/integrator.h
         include/RK4Integrator.h
         src/RK4Integrator.cpp
         include/simulation.h
