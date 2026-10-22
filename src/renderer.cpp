@@ -207,7 +207,7 @@ void renderExperimentScreen(ExperimentSettings& settings) {
     static TextBox omega1Box = {{0,0,0,0}, "0.0"};
     static TextBox omega2Box = {{0,0,0,0}, "0.0"};
 
-    static TextBox dtBox = {{0,0,0,0}, "0.015"};
+    static TextBox dtBox = {{0,0,0,0}, "0.016"};
 
     settings.m1 = readDouble(m1Box, settings.m1);       // Take the text inside m1Box, covert it into a double, and put that into settings.m1
     settings.m2 = readDouble(m2Box, settings.m2);

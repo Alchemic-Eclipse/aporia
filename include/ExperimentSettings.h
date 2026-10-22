@@ -14,5 +14,5 @@ struct ExperimentSettings {
     double omega1 = 0.0;
     double omega2 = 0.0;
 
-    double dt = 0.015;
+    double dt = 0.016;
 };
