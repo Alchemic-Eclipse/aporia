@@ -191,6 +191,14 @@ If macOS still reports that the app is damaged.
 - And run the app again.
 
 ---
+## Credits & Special Thanks
+**Breaking news:** Aporia is attempting to escape the Apple ecosystem!!!<br> 
+Unfortunately, Windows has other plans 🗿<br><br>
+Thankfully, [@thequietgrind-404](https://github.com/thequietgrind-404) has been helping me test the Windows build and making sure the rest of humanity might actually be able to run this thing...<br>
+The testing isn't finished yet, so the saga continues 😭<br><br>
+Jokes aside, thank you for spending your time helping me with this. It genuinely means a lot, and Aporia wouldn't be getting this far on Windows without your help 🍀 
 
+
+---
 ### And with that,,,,, Thank you for trying out my project!! 🦋️<br>
 ~ It has been an honor... 🍀
