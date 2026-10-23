@@ -165,6 +165,39 @@ void drawParameterBox(const char* label, TextBox& box, int labelX, int boxX, int
     drawTextBox(box);
 }
 
+void drawIntegratorOption(Rectangle bounds, const char* label, bool selected) {
+
+    Vector2 mouse = GetMousePosition();
+    bool hovered = CheckCollisionPointRec(mouse, bounds);
+
+    // Highlight
+    Color borderColor =
+        selected ? primaryText :
+        hovered ? secondaryText :
+        accent;
+
+    Color fillColor =
+        hovered ? BLACK :
+        background;
+
+    DrawRectangleRec(bounds, fillColor);
+    DrawRectangleLinesEx(bounds, 2, borderColor);
+
+    // Center the label
+    int fontSize = 20;
+    int textWidth = MeasureText(label, fontSize);
+
+    DrawText(
+        label,
+        static_cast<int>(bounds.x + (bounds.width - textWidth) / 2),
+        static_cast<int>(bounds.y + (bounds.height - fontSize) / 2),
+        fontSize,
+        primaryText
+    );
+
+}
+
+
 // Take whatever the user typed and try to turn it into a double
 double readDouble(const TextBox& box, double currentValue) {
 
@@ -255,6 +288,26 @@ void renderExperimentScreen(ExperimentSettings& settings) {
     // Time step
     DrawText("Time step", 740, 385, 25, WHITE);
     drawParameterBox("dt", dtBox, 760, 880, 440);
+
+    // Integrator selector
+    DrawText("Integrator", 60, 630, 25, WHITE);
+
+    const Rectangle eulerButton = {80, 690, 140, 45};
+    const Rectangle rk4Button = {250, 690, 140, 45};
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 mouse = GetMousePosition();
+
+        if (CheckCollisionPointRec(mouse, eulerButton)) {
+            settings.integrator = IntegratorType::Euler;
+        }
+        else if (CheckCollisionPointRec(mouse, rk4Button)) {
+            settings.integrator = IntegratorType::RK4;
+        }
+    }
+
+    drawIntegratorOption(eulerButton, "Euler", settings.integrator == IntegratorType::Euler);
+    drawIntegratorOption(rk4Button, "RK4", settings.integrator == IntegratorType::RK4);
 
     // Start Button
     Rectangle startButton = {800,670, 300, 65};

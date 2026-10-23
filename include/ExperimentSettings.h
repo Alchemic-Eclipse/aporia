@@ -1,5 +1,11 @@
 #pragma once
 
+enum class IntegratorType {
+    Euler,
+    RK4
+};
+
+
 struct ExperimentSettings {
     double m1 = 2.0;
     double m2 = 1.5;
@@ -15,4 +21,7 @@ struct ExperimentSettings {
     double omega2 = 0.0;
 
     double dt = 0.016;
+
+    // RK4 being the default integrator
+    IntegratorType integrator = IntegratorType::RK4;
 };

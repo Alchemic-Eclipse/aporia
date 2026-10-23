@@ -1,11 +1,14 @@
 #include <iostream>
 #include "../include/DoublePendulum.h"
 #include "../include/renderer.h"
+#include "../include/integrator.h"
+#include "../include/EulerIntegrator.h"
 #include "../include/RK4Integrator.h"
 #include "../include/analysis.h"
 #include "../include/ExperimentSettings.h"
 #include "../include/sonifier.h"
 #include <raylib.h>
+#include <memory>
 
 
 enum class Screen {
@@ -33,8 +36,7 @@ int main() {
     double dt = settings.dt;
     double time = 0.0;  // Start experiment from t = 0
 
-    // EulerIntegrator integrator;
-    RK4Integrator integrator;
+    std::unique_ptr<Integrator> integrator;
 
     // Visual Rendering
     initializeRenderer();
@@ -106,6 +108,14 @@ int main() {
                     dt = settings.dt;
                     time = 0.0;  // Reset simulation time
 
+                    // Create the integrator chosen in Experiment setup
+                    if (settings.integrator == IntegratorType::Euler) {
+                        integrator = std::make_unique<EulerIntegrator>();
+                    }
+                    else {
+                        integrator = std::make_unique<RK4Integrator>();
+                    }
+
                     // Enter the simulation
                     currentScreen = Screen::SIMULATION;
                     showControls = false;
@@ -127,15 +137,15 @@ int main() {
             }
 
             if (!paused) {
-                pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
-                pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+                pendulumA.state = integrator->step(pendulumA, pendulumA.state, dt);
+                pendulumB.state = integrator->step(pendulumB, pendulumB.state, dt);
                 sonifier.update(pendulumA, pendulumB);
                 time += dt;
             }
 
             if (IsKeyPressed(KEY_N) && paused) {
-                pendulumA.state = integrator.step(pendulumA, pendulumA.state, dt);
-                pendulumB.state = integrator.step(pendulumB, pendulumB.state, dt);
+                pendulumA.state = integrator->step(pendulumA, pendulumA.state, dt);
+                pendulumB.state = integrator->step(pendulumB, pendulumB.state, dt);
                 sonifier.update(pendulumA, pendulumB);
                 time += dt;
 
