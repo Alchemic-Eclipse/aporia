@@ -1,76 +1,101 @@
 #include "../include/sonifier.h"
 
+#include <algorithm>
 #include <cmath>
 #include <vector>
-#include <algorithm>
 
-void Sonifier::initialize() {
+namespace {
+    constexpr unsigned int sampleRate = 44100;
+    constexpr int sampleCount = 4096;
+    constexpr int sampleSize = 16;
+    constexpr int channels = 1;
 
-    // Initialize Raylib audio system
-    InitAudioDevice();
+    constexpr float minFrequency = 220.0f;
+    constexpr float maxFrequency = 880.0f;
 
-    // Set default size of the audio buffer
-    SetAudioStreamBufferSizeDefault(4096);
+    constexpr float minAmplitude = 0.01f;
+    constexpr float maxAmplitude = 0.32f;
 
-    // Create an audio stream
-    streamA = LoadAudioStream(44100, 16, 1);
-    streamB = LoadAudioStream(44100, 16, 1);
+    // Generate one buffer of sine-wave samples.
+    void generateSamples(
+        std::vector<short>& buffer,
+        float frequency,
+        float amplitude,
+        float& phase
+    ) {
+        const float phaseIncrement =
+            2.0f * PI * frequency / static_cast<float>(sampleRate);
 
-}
+        for (short& sampleValue : buffer) {
+            const float sample = std::sin(phase);
 
-float Sonifier::thetaToFrequency(double theta) {
+            sampleValue = static_cast<short>(
+                sample * amplitude * 32767.0f
+            );
 
-    const float minFrequency = 220.0f;
-    const float maxFrequency = 880.0f;
+            phase += phaseIncrement;
 
-    double normalizedTheta = (std::sin(theta) + 1.0) / 2.0 ;
-
-    return minFrequency + static_cast<float>(normalizedTheta) * (maxFrequency - minFrequency);
-}
-
-// Helper, that fills audio buffer with sine wave samples
-void generateSamples(
-    std::vector<short>& buffer,
-    float frequency,
-    float amplitude,
-    float& phase,
-    int sampleRate
-) {
-
-    const float phaseIncrement = 2.0f * PI * frequency / sampleRate;
-
-    for (size_t i = 0; i < buffer.size(); ++i) {
-
-        // generate one point on the sine wave
-        float sample = std::sin(phase);
-
-        // Convert the floating point sample into a 16 bit integer
-        buffer[i] = static_cast<short>(sample * amplitude * 32767.0f);
-
-        // Move forward through the sine wave
-        phase += phaseIncrement;
-
-        if (phase >= 2.0f * PI)
-            phase -= 2.0f * PI;
-
+            // Keep the phase within one cycle.
+            if (phase >= 2.0f * PI) {
+                phase -= 2.0f * PI;
+            }
+        }
     }
 }
 
-void Sonifier::update(const DoublePendulum &pendulumA, const DoublePendulum &pendulumB) {
+void Sonifier::initialize() {
+    // Configure the audio buffer before initializing the device.
+    SetAudioStreamBufferSizeDefault(sampleCount);
+    InitAudioDevice();
+
+    streamA = LoadAudioStream(sampleRate, sampleSize, channels);
+    streamB = LoadAudioStream(sampleRate, sampleSize, channels);
+
+    // Start playback only after the streams have been created.
+    streamAStarted = false;
+    streamBStarted = false;
+}
+
+float Sonifier::thetaToFrequency(double theta) {
+    const double normalizedTheta = (std::sin(theta) + 1.0) / 2.0;
+
+    return minFrequency +
+        static_cast<float>(normalizedTheta) *
+        (maxFrequency - minFrequency);
+}
+
+float Sonifier::omegaToAmplitude(double omega) {
+    const double speed = std::abs(omega);
+    const double normalized = std::clamp(speed / 10.0, 0.0, 1.0);
+
+    return minAmplitude +
+        static_cast<float>(normalized) *
+        (maxAmplitude - minAmplitude);
+}
+
+void Sonifier::update(
+    const DoublePendulum& pendulumA,
+    const DoublePendulum& pendulumB
+) {
+    if (muted) {
+        return;
+    }
+
     frequencyA = thetaToFrequency(pendulumA.state.theta2);
     frequencyB = thetaToFrequency(pendulumB.state.theta2);
 
-    float amplitudeA = omegaToAmplitude(pendulumA.state.omega2);
-    float amplitudeB = omegaToAmplitude(pendulumB.state.omega2);
+    const float amplitudeA =
+        omegaToAmplitude(pendulumA.state.omega2);
 
-    const int sampleCount = 4096;
+    const float amplitudeB =
+        omegaToAmplitude(pendulumB.state.omega2);
 
-    std::vector<short> bufferA(sampleCount);
-    std::vector<short> bufferB(sampleCount);
-
+    // Reuse buffers rather than allocating them on every update.
+    static std::vector<short> bufferA(sampleCount);
+    static std::vector<short> bufferB(sampleCount);
 
     if (!streamAStarted) {
-        generateSamples(bufferA, frequencyA, amplitudeA, phaseA, 44100);
+        generateSamples(bufferA, frequencyA, amplitudeA, phaseA);
         UpdateAudioStream(streamA, bufferA.data(), sampleCount);
 
         PlayAudioStream(streamA);
@@ -78,44 +103,23 @@ void Sonifier::update(const DoublePendulum &pendulumA, const DoublePendulum &pen
     }
 
     if (!streamBStarted) {
-        generateSamples(bufferB, frequencyB, amplitudeB, phaseB, 44100);
+        generateSamples(bufferB, frequencyB, amplitudeB, phaseB);
         UpdateAudioStream(streamB, bufferB.data(), sampleCount);
 
         PlayAudioStream(streamB);
         streamBStarted = true;
     }
 
-
     if (IsAudioStreamProcessed(streamA)) {
-        generateSamples(bufferA, frequencyA, amplitudeA, phaseA, 44100);
+        generateSamples(bufferA, frequencyA, amplitudeA, phaseA);
         UpdateAudioStream(streamA, bufferA.data(), sampleCount);
     }
 
     if (IsAudioStreamProcessed(streamB)) {
-        generateSamples(bufferB, frequencyB, amplitudeB, phaseB, 44100);
+        generateSamples(bufferB, frequencyB, amplitudeB, phaseB);
         UpdateAudioStream(streamB, bufferB.data(), sampleCount);
     }
-
 }
-
-void Sonifier::close() {
-    UnloadAudioStream(streamA);
-    UnloadAudioStream(streamB);
-
-    CloseAudioDevice();
-}
-
-float Sonifier::omegaToAmplitude(double omega) {
-    const float minAmplitude = 0.01f;
-    const float maxAmplitude = 0.32f;
-
-    double speed = std::abs(omega);
-
-    double normalized = std::min(speed / 10.0, 1.0);
-
-    return minAmplitude + static_cast<float>(normalized) * (maxAmplitude - minAmplitude);
-}
-
 
 void Sonifier::toggleMute() {
     muted = !muted;
@@ -123,9 +127,25 @@ void Sonifier::toggleMute() {
     if (muted) {
         PauseAudioStream(streamA);
         PauseAudioStream(streamB);
-    }
-    else {
+    } else {
         ResumeAudioStream(streamA);
         ResumeAudioStream(streamB);
     }
+}
+
+void Sonifier::close() {
+    if (streamA.buffer != nullptr) {
+        UnloadAudioStream(streamA);
+    }
+
+    if (streamB.buffer != nullptr) {
+        UnloadAudioStream(streamB);
+    }
+
+    if (IsAudioDeviceReady()) {
+        CloseAudioDevice();
+    }
+
+    streamAStarted = false;
+    streamBStarted = false;
 }
