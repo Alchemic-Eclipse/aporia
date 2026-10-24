@@ -39,6 +39,8 @@ set(APORIA_SOURCES
 
 if(APPLE)
     add_executable(aporia MACOSX_BUNDLE ${APORIA_SOURCES})
+elseif(WIN32)
+    add_executable(aporia WIN32 ${APORIA_SOURCES})
 else()
     add_executable(aporia ${APORIA_SOURCES})
 endif()
