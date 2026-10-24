@@ -47,6 +47,10 @@ endif()
 
 if(WIN32)
     target_link_libraries(aporia PRIVATE raylib glfw)
+
+    set_target_properties(aporia PROPERTIES
+            LINK_FLAGS "/ENTRY:mainCRTStartup"
+    )
 else()
     target_link_libraries(aporia PRIVATE raylib)
 endif()
